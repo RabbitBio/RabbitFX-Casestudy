@@ -1,0 +1,111 @@
+CXXFLAGS += -O3 -std=c++14 -fopenmp -Isrc -I@capnp@/include -I@mathinc@
+CPPFLAGS += @CPPFLAGS@
+
+UNAME_S=$(shell uname -s)
+
+ifeq ($(UNAME_S),Darwin)
+	CXXFLAGS += -mmacosx-version-min=10.7 -stdlib=libc++
+else
+	CXXFLAGS += -include src/mash/memcpyLink.h -Wl,--wrap=memcpy
+	CFLAGS += -include src/mash/memcpyLink.h
+endif
+
+SOURCES=\
+	src/mash/Command.cpp \
+	src/mash/CommandBounds.cpp \
+	src/mash/CommandContain.cpp \
+	src/mash/CommandDistance.cpp \
+	src/mash/CommandScreen.cpp \
+	src/mash/CommandTriangle.cpp \
+	src/mash/CommandFind.cpp \
+	src/mash/CommandInfo.cpp \
+	src/mash/CommandPaste.cpp \
+	src/mash/CommandSketch.cpp \
+	src/mash/CommandList.cpp \
+	src/mash/hash.cpp \
+	src/mash/HashList.cpp \
+	src/mash/HashPriorityQueue.cpp \
+	src/mash/HashSet.cpp \
+	src/mash/MinHashHeap.cpp \
+	src/mash/MurmurHash3.cpp \
+	src/mash/mash.cpp \
+	src/mash/Sketch.cpp \
+	src/mash/sketchParameterSetup.cpp \
+	src/mash/CommandDumptri.cpp \
+	src/mash/CommandDumpdist.cpp \
+	src/mash/fastx/FastxIO.cpp \
+	src/mash/fastx/FastxStream.cpp \
+
+OBJECTS=$(SOURCES:.cpp=.o) src/mash/capnp/MinHash.capnp.o
+
+all : mash libmash.a
+
+mash : libmash.a src/mash/memcpyWrap.o
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o mash src/mash/memcpyWrap.o libmash.a @capnp@/lib/libcapnp.a @capnp@/lib/libkj.a @mathlib@  -lz -lm -lpthread
+
+libmash.a : $(OBJECTS)
+	ar -cr libmash.a $(OBJECTS)
+	ranlib libmash.a
+
+.SUFFIXES :
+
+%.o : %.cpp src/mash/capnp/MinHash.capnp.h
+	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+
+%.o : %.c++
+	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+
+src/mash/memcpyWrap.o : src/mash/memcpyWrap.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+src/mash/capnp/MinHash.capnp.c++ src/mash/capnp/MinHash.capnp.h : src/mash/capnp/MinHash.capnp
+	cd src/mash/capnp;export PATH=@capnp@/bin/:${PATH};capnp compile -I @capnp@/include -oc++ MinHash.capnp
+
+install : mash
+	mkdir -p @prefix@/bin/
+	mkdir -p @prefix@/lib/
+	mkdir -p @prefix@/include/
+	mkdir -p @prefix@/include/mash
+	mkdir -p @prefix@/include/mash/capnp
+	cp `pwd`/mash @prefix@/bin/
+	cp `pwd`/libmash.a @prefix@/lib/
+	cp `pwd`/src/mash/*.h @prefix@/include/mash/
+	cp `pwd`/src/mash/capnp/MinHash.capnp.h @prefix@/include/mash/capnp/
+
+.PHONY: uninstall
+uninstall:
+	rm -f @prefix@/bin/mash
+	rm -f @prefix@/lib/libmash.a
+	rm -rf @prefix@/include/mash
+
+clean :
+	-rm mash
+	-rm libmash.a
+	-rm src/mash/*.o
+	-rm src/mash/capnp/*.o
+	-rm src/mash/capnp/*.c++
+	-rm src/mash/capnp/*.h
+	-rm src/mash/fastx/*.o
+
+.PHONY: test
+test : testSketch testDist testScreen
+
+testSketch : mash test/genomes.msh test/reads.msh
+	./mash info -d test/genomes.msh > test/genomes.json
+	./mash info -d test/reads.msh > test/reads.json
+	diff test/genomes.json test/ref/genomes.json
+	diff test/reads.json test/ref/reads.json
+
+test/genomes.msh : mash
+	cd test ; ../mash sketch -o genomes.msh genome1.fna genome2.fna genome3.fna
+
+test/reads.msh : mash
+	cd test ; ../mash sketch -r -I reads reads1.fastq reads2.fastq -o reads.msh
+
+testDist : mash test/genomes.msh test/reads.msh
+	./mash dist test/genomes.msh test/reads.msh > test/genomes.dist
+	diff test/genomes.dist test/ref/genomes.dist
+
+testScreen : mash test/genomes.msh
+	cd test ; ../mash screen genomes.msh reads1.fastq reads2.fastq > screen
+	diff test/screen test/ref/screen
