@@ -53,8 +53,8 @@ int CommandSketch::run() const
     	return 1;
     }
    
-   	if(getOption("freeMemory").active)
-		parameters.freeMemory = true;
+//   	if(getOption("freeMemory").active)
+//		parameters.freeMemory = true;
 
     for ( int i = 0; i < arguments.size(); i++ )
     {
