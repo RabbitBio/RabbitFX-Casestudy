@@ -1,33 +1,11 @@
-![RabbitMash](mash.png)
+![RabbitIO-Mash](mash.png)
 
 
 
-RabbitMash is an efficient highly optimized implementation of [Mash](https://github.com/marbl/Mash) which can take full advantage of modern hardware including multi-threading, vectorization, and fast I/O.
+RabbitIO-Mash is an efficient highly optimized implementation of [Mash](https://github.com/marbl/Mash) which can take full advantage of modern hardware including multi-threading, vectorization, and fast I/O.
 
 
 
-## Installation
-
-The easiest way to use RabbitMash is to grab a binary release from [here](https://github.com/ZekunYin/RabbitMash/releases). Currently, RabbitMash only supports x86_64 Linux. And we provide four versions of RabbitMash for different CPU architectures including:
-
-| Version     | CPU flags                 |
-| ----------- | ------------------------- |
-| mash_nosimd | no requirement            |
-| mash_sse4   | sse4_1                    |
-| mash_avx2   | avx2                      |
-| mash_avx512 | avx512f avx512bw avx512vl |
-
-You can check the CPU Flags by `lscpu` to select corresponding binary.
-
-All binaries have been tested on both Intel and AMD CPUs, see below.
-
-| CPU                  | OS           | mash_nosimd | mash_sse4 | mash_avx2     | mash_avx512   |
-| -------------------- | ------------ | ----------- | --------- | ------------- | ------------- |
-| Intel Xeon Gold 6148 | CentOS 8.1   | pass        | pass      | pass          | pass          |
-| AMD EPYC 7452        | CnetOS 7.6   | pass        | pass      | pass          | not supported |
-| Intel Core i5-3470   | Ubuntu 18.04 | pass        | pass      | not supported | not supported |
-
-The binaries should also work on other linuxes. But if you have problem running these binaries, feel free to issue us.
 
 
 

@@ -75,37 +75,37 @@ else
     AC_SUBST(amcppflags, "-DUSE_BOOST")
 fi
 
-AC_ARG_ENABLE(simd, AS_HELP_STRING([--enable-simd], [enable simd(default=no)]), [enable_simd=${enableval}], [enable_simd=no])       
-
-if test "x$enable_simd" == "xyes"
-then 
-	CPPFLAGS="$CPPFLAGS -march=native"
-	AC_MSG_NOTICE([simd CPPFLAGS: $CPPFLAGS])
-fi
-
-AC_ARG_ENABLE(avx512, AS_HELP_STRING([--enable-avx512], [enable avx512(default=no)]), [enable_avx512=${enableval}], [enable_avx512=no])
-
-if test "x$enable_avx512" == "xyes"
-then
-	CPPFLAGS="$CPPFLAGS -mavx512f -mavx512bw -mavx512vl -mavx512dq -mavx512cd"
-	AC_MSG_NOTICE([avx2 CPPFLAGS: $CPPFLAGS])
-fi
-
-AC_ARG_ENABLE(avx2, AS_HELP_STRING([--enable-avx2], [enable avx2(default=no)]), [enable_avx2=${enableval}], [enable_avx2=no])
-
-if test "x$enable_avx2" == "xyes"
-then
-	CPPFLAGS="$CPPFLAGS -mavx2"
-	AC_MSG_NOTICE([avx2 CPPFLAGS: $CPPFLAGS])
-fi
-
-AC_ARG_ENABLE(sse4, AS_HELP_STRING([--enable-sse4], [enable sse4(default=no)]), [enable_sse4=${enableval}], [enable_sse4=no])
-
-if test "x$enable_sse4" == "xyes"
-then
-	CPPFLAGS="$CPPFLAGS -msse4"
-	AC_MSG_NOTICE([sse CPPFLAGS: $CPPFLAGS])
-fi
+#AC_ARG_ENABLE(simd, AS_HELP_STRING([--enable-simd], [enable simd(default=no)]), [enable_simd=${enableval}], [enable_simd=no])       
+#
+#if test "x$enable_simd" == "xyes"
+#then 
+#	CPPFLAGS="$CPPFLAGS -march=native"
+#	AC_MSG_NOTICE([simd CPPFLAGS: $CPPFLAGS])
+#fi
+#
+#AC_ARG_ENABLE(avx512, AS_HELP_STRING([--enable-avx512], [enable avx512(default=no)]), [enable_avx512=${enableval}], [enable_avx512=no])
+#
+#if test "x$enable_avx512" == "xyes"
+#then
+#	CPPFLAGS="$CPPFLAGS -mavx512f -mavx512bw -mavx512vl -mavx512dq -mavx512cd"
+#	AC_MSG_NOTICE([avx512 CPPFLAGS: $CPPFLAGS])
+#fi
+#
+#AC_ARG_ENABLE(avx2, AS_HELP_STRING([--enable-avx2], [enable avx2(default=no)]), [enable_avx2=${enableval}], [enable_avx2=no])
+#
+#if test "x$enable_avx2" == "xyes"
+#then
+#	CPPFLAGS="$CPPFLAGS -mavx2"
+#	AC_MSG_NOTICE([avx2 CPPFLAGS: $CPPFLAGS])
+#fi
+#
+#AC_ARG_ENABLE(sse4, AS_HELP_STRING([--enable-sse4], [enable sse4(default=no)]), [enable_sse4=${enableval}], [enable_sse4=no])
+#
+#if test "x$enable_sse4" == "xyes"
+#then
+#	CPPFLAGS="$CPPFLAGS -msse4"
+#	AC_MSG_NOTICE([sse CPPFLAGS: $CPPFLAGS])
+#fi
 
 AC_ARG_ENABLE(static-cpp, AS_HELP_STRING([--enable-static-cpp], [enable static-cpp(default=no)]), [enable_static_cpp=${enableval}], [enable_static_cpp=no])
 
