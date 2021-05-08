@@ -30,31 +30,12 @@ CommandSketch::CommandSketch()
     addOption("prefix", Option(Option::File, "o", "Output", "Output prefix (first input file used if unspecified). The suffix '.msh' will be appended.", ""));
     addOption("id", Option(Option::File, "I", "Sketch", "ID field for sketch of reads (instead of first sequence ID).", ""));
     addOption("comment", Option(Option::File, "C", "Sketch", "Comment for a sketch of reads (instead of first sequence comment).", ""));
-	addOption("freeMemory", Option(Option::Boolean, "fw", "Output", "free the memory by writeToCpanp to several subfiles intermediately.", ""));
+//	addOption("freeMemory", Option(Option::Boolean, "fw", "Output", "free the memory by writeToCpanp to several subfiles intermediately.", ""));
     useSketchOptions();
 }
 
 int CommandSketch::run() const
 {
-#if defined __AVX512F__ && defined __AVX512CD__
-		cerr << "Using AVX512 instructions" << endl;
-#else 
-#if defined __AVX2__
-		cerr << "Using AVX2 instructions" << endl;
-		//TODO: implement by avx2
-#else
-#if defined __SSE4_1__
-		//cerr << "Using SSE4 instructions" << endl;
-		//cerr << "Not implemented yet! Please use:" << endl;
-		//cerr << "./configure --disable-simd" << endl;
-		cerr << "No SIMD instructions used" << endl;
-		//TODO:implement by sse
-#else
-		cerr << "No SIMD instructions used" << endl;
-		//implement without optimization
-#endif
-#endif
-#endif
 
     if ( arguments.size() == 0 || options.at("help").active )
     {
@@ -72,8 +53,8 @@ int CommandSketch::run() const
     	return 1;
     }
    
-   	if(getOption("freeMemory").active)
-		parameters.freeMemory = true;
+//   	if(getOption("freeMemory").active)
+//		parameters.freeMemory = true;
 
     for ( int i = 0; i < arguments.size(); i++ )
     {

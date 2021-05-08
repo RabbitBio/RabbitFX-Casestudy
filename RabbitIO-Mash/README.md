@@ -1,5 +1,7 @@
 # RabbitIO-Mash
 
+RabbitIO-Mash is an efficient highly optimized implementation of [Mash](https://github.com/marbl/Mash) which can take full advantage of modern hardware including multi-threading, vectorization, and fast I/O.
+
 ## Build
 
 **Dependencies:**
