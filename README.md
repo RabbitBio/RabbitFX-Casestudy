@@ -1,4 +1,12 @@
 
+# Introduction
+
+This project contains three case studies of our [RabbitIO](https://github.com/RabbitBio/RabbitIO) project:
+
+ - [RabbitIO-Ktrim](./RabbitIO-Ktrim)
+ - [RabbitIO-Mash](./RabbitIO-Mash)
+ - [RabbitIO-fastp](./RabbitIO-fastp)
+
 # RabbitIO-Ktrim
 RabbitIO-Ktrim is an enhanced version of [Ktrim](https://github.com/hellosunking/Ktrim) based on [RabbitIO](https://github.com/RabbitBio/RabbitIO).
 
@@ -69,28 +77,8 @@ Optional parameters:
 Please refer to README.md file for more information (e.g., setting adapters).
 
 RabbitIO-Ktrim: enhanced extra-fast and accurate adapter- and quality-trimmer based on Ktrim.
-```
-
-`Ktrim` contains built-in adapter sequences used by Illumina TruSeq kits, Nextera kits, Nextera transposase
-adapters and BGI sequencing kits within the package. However, customized adapter sequences are also allowed
-by setting '-a' (for read 1) and '-b' (for read 2; if it is the same as read 1, you can left it blank)
-options. You may need to refer to the manual of your library preparation kit for the adapter sequences.
-Note that in the current version of `Ktrim`, only 1 pair of adapters is allowed.
-
-Here are the built-in adapter sequences (the copyright should belong to the corresponding companies):
 
 ```
-Illumina TruSeq kits:
-AGATCGGAAGAGC (for both read 1 and read 2)
-
-Nextera kits (suitable for ATAC-seq data):
-CTGTCTCTTATACACATCT (for both read 1 and read 2)
-
-BGI adapters:
-Read 1: AAGTCGGAGGCCAAGCGGTC
-Read 2: AAGTCGGATCGTAGCCATGT
-```
-
 ### Example 1
 
 Your data is generated using Illumina TruSeq kit in Single-end mode, then you can run:
@@ -127,9 +115,6 @@ script.** Another script `check.accuracy.pl` is designed to evaluate the accurac
 contains adapters and the number of reads in the trimmed files).
 
 
-## Notice
-
-This is a case study of our RabbitIO project.
 
 
 # RabbitIO-fastp
@@ -151,15 +136,6 @@ RabbitIO-fastp -w nthreads -i in.fq -o out.fq
 ```
 RabbitIO-fastp -w nthreads -i in.R1.fq -I in.R2.fq -o out.R1.fq -O out.R2.fq
 ```
-
-# Options
-For more help information, please refer to `RabbitIO-fastp -h`.
-
-If `-w` opition is not specified, RabbitIO-fastp will set working thread number to total CPU cores - 2.
-
-# Examples of report
-`RabbitIO-fastp` creates reports in both HTML and JSON format.
-
 
 # RabbitIO-Mash
 
@@ -189,7 +165,6 @@ make test
 **Build dependency-free binary:**
 
 ```bash
-git clone https://github.com/ZekunYin/RabbitMash.git
 cd RabbitMash
 ./bootstrap.sh
 ./configure [--prefix=...] [--with-capnp=...] [--with-gsl=...] \
@@ -211,7 +186,6 @@ sudo dnf install capnproto capnproto-devel gsl gsl-devel
 ```
 
 If you are not a root user, you need to build the dependecies from source code.
-
 
 
 ## Simple Usage
