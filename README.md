@@ -16,7 +16,6 @@ you can re-compile the programs:
 
 ```bash
 
-git clone https://github.com/RabbitBio/RabbitIO-Ktrim.git
 cd RabbitIO-Ktrim
 make clean && make
 ```
