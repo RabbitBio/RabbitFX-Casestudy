@@ -7,15 +7,18 @@ you can re-compile the programs:
 
 ```bash
 
-git clone https://github.com/RabbitBio/RabbitIO-Ktrim.git
-cd RabbitIO-Ktrim
-make clean && make
+git https://github.com/RabbitBio/RabbitIO-Casestudy.git
+cd RabbitIO-Casestudy/RabbitIO-Ktrim
+mkdir build
+cd build
+cmake ..
+make 
 ```
 
 ## Usage
 
 ```bash
-Usage: Ktrim [options] -1/-U Read1.fq [ -2 Read2.fq ] -o out.prefix
+Usage: RabbitIO-Ktrim [options] -1/-U Read1.fq [ -2 Read2.fq ] -o out.prefix
 
 RabbitIO-Ktrim is an enhanced version of Ktrim based on RabbitIO.
 
