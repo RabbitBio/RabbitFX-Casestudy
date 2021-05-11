@@ -405,9 +405,6 @@ bool Sketch::sketchFileBySequence(FILE * file, ThreadPool<Sketch::SketchInput, S
 
 bool Sketch::sketchFileByChunk(FILE * file, ThreadPool<Sketch::SketchInput, Sketch::SketchOutput> * threadPool)
 {
-	//gzFile fp = gzdopen(fileno(file), "r");
-	//kseq_t *seq = kseq_init(fp);
-	
 	mash::fa::FastaDataPool *fastaPool    = new mash::fa::FastaDataPool(parameters.parallelism, 1<<20);
 	mash::fa::FastaFileReader *fileReader = new mash::fa::FastaFileReader(fileno(file), parameters.kmerSize - 1, true);
 	mash::fa::FastaReader *fastaReader    = new mash::fa::FastaReader(*fileReader, *fastaPool);
@@ -415,26 +412,13 @@ bool Sketch::sketchFileByChunk(FILE * file, ThreadPool<Sketch::SketchInput, Sket
     int count = 0;
 	bool skipped = false;
 	
-	//while ((l = kseq_read(seq)) >= 0)
 	int nChunks = 0;
 	while(true)
 	{
-		//if ( l < parameters.kmerSize )
-		//{
-		//	skipped = true;
-		//	continue;
-		//}
-		
-		//if ( verbosity > 0 && parameters.windowed ) cout << '>' << seq->name.s << " (" << l << "nt)" << endl << endl;
-		//if (seq->comment.l) printf("comment: %s\n", seq->comment.s);
-		//printf("seq: %s\n", seq->seq.s);
-		//if (seq->qual.l) printf("qual: %s\n", seq->qual.s);
 		mash::fa::FastaChunk *fachunk = fastaReader->readNextChunk();
 		if(fachunk == NULL) break;
 
 		nChunks++;	
-		//
-		//memcpy(seqCopy, seq->seq.s, l);
 		
 		threadPool->runWhenThreadAvailable(new SketchInput(fachunk, fastaPool, parameters), sketchChunk);
 		
@@ -445,13 +429,10 @@ bool Sketch::sketchFileByChunk(FILE * file, ThreadPool<Sketch::SketchInput, Sket
     	
 	}
 
-	//cerr << "partNum: " << fastaPool->partNum << endl << flush;
 	while( fastaPool->partNum != 0 )
 	{
 	}
 
-	//cerr << "partNum: " << fastaPool->partNum << endl << flush;
-	//cerr << "nChunks: " << nChunks << endl << flush;
 	delete fastaReader;
 	delete fileReader;
 	delete fastaPool;
@@ -463,7 +444,6 @@ bool Sketch::sketchFileByChunk(FILE * file, ThreadPool<Sketch::SketchInput, Sket
 void Sketch::useThreadOutput_FreeMemory(SketchOutput * output)
 {
 	references.insert(references.end(), output->references.begin(), output->references.end());
-	//cerr << "the size of references  of useThereadOutput is: " << references.size() << endl;	
 	positionHashesByReference.insert(positionHashesByReference.end(), output->positionHashesByReference.begin(), output->positionHashesByReference.end());
 
 	if(references.size() >= MEMORYBOUND + 1){
@@ -476,8 +456,6 @@ void Sketch::useThreadOutput_FreeMemory(SketchOutput * output)
 		string fixName = to_string(bGlobalIndex) + "world.msh";
 		this->writeToCapnp(fixName.c_str());
 		bGlobalIndex++;
-		//sleep(2);
-	//	references.erase(references.begin(), references.begin()+438);
 	}
 	delete output;
 }
@@ -491,7 +469,6 @@ void Sketch::useThreadOutput(SketchOutput * output)
 
 void Sketch::useThreadOutputChunk(SketchOutput * output)
 {
-	//cerr << "output size: " << output->references.size() << endl << flush;
 	for(int i = 0; i < output->references.size(); i++)
 	{
 		if(references.empty()){
@@ -556,7 +533,6 @@ void Sketch::useThreadOutputChunk(SketchOutput * output)
 				string fixName = to_string(bGlobalIndex) + "world.msh";
 				this->writeToCapnp(fixName.c_str());
 				bGlobalIndex++;
-				//sleep(2);
 			//	references.erase(references.begin(), references.begin()+438);
 			}
 		}
@@ -577,20 +553,6 @@ bool Sketch::writeToFile() const
 
 int Sketch::writeToCapnp(const char * file) const
 {  
-
-	//debug only TODO:remove it
-    //for ( uint64_t i = 0; i < references.size(); i++ )
-	//{
-	//	for(uint64_t j = 0; j < references[i].hashesSorted.size(); j++)
-	//	{
-	//		if(parameters.use64)
-	//			cerr << references[i].hashesSorted.hashes64[j] << " ";
-	//		else
-	//			cerr << references[i].hashesSorted.hashes32[j] << " ";
-	//	}
-	//	cerr << endl;
-	//}
-
     int fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
     
     if ( fd < 0 )
@@ -727,15 +689,7 @@ void addMinHashes(MinHashHeap & minHashHeap, const char * seq, uint64_t length, 
     // (potentially replacing them). This allows min-hash sets across multiple
     // sequences to be determined.
     
-    // uppercase TODO: alphabets?
-    //
-    //for ( uint64_t i = 0; i < length; i++ )
-    //{
-    //    if ( ! parameters.preserveCase && seq[i] > 96 && seq[i] < 123 )
-    //    {
-    //        seq[i] -= 32;
-    //    }
-    //}
+    // uppercase and check bad have been moved to sketchChunk I/O?
     
     char * seqRev;
     
@@ -747,31 +701,6 @@ void addMinHashes(MinHashHeap & minHashHeap, const char * seq, uint64_t length, 
 
     for ( uint64_t i = 0; i < length - kmerSize + 1; i++ )
     {
-		// repeatedly skip kmers with bad characters
-		//
-		bool bad = false;
-		//
-		for ( uint64_t j = i; j < i + kmerSize && i + kmerSize <= length; j++ )
-		{
-			if ( ! parameters.alphabet[seq[j]] )
-			{
-				i = j; // skip to past the bad character
-				bad = true;
-				break;
-			}
-		}
-		//
-		if ( bad )
-		{
-			continue;
-		}
-		//	
-		if ( i + kmerSize > length )
-		{
-			// skipped to end
-			break;
-		}
-            
         const char *kmer_fwd = seq + i;
         const char *kmer_rev = seqRev + length - i - kmerSize;
         const char * kmer = (noncanonical || memcmp(kmer_fwd, kmer_rev, kmerSize) <= 0) ? kmer_fwd : kmer_rev;
@@ -1273,27 +1202,40 @@ Sketch::SketchOutput * loadCapnp(Sketch::SketchInput * input)
     return output;
 }
 
+const char complement[] = {
+  'T', // 'A' = A
+  'V', // 'B' = not A = C,T,G
+  'G', // 'C' = C
+  'H', // 'D' = not C = A,T,G
+  'N', // 'E' = .
+  'N', // 'F' = .
+  'C', // 'G' = G
+  'D', // 'H' = not G = A,C,T
+  'N', // 'I' = .
+  'N', // 'J' = .
+  'M', // 'K' = T,G = Keto
+  'N', // 'L' = .
+  'K', // 'M' = A,C = Amino
+  'N', // 'N' = A,C,T,G = uNkNowN
+  'N', // 'O' = .
+  'N', // 'P' = .
+  'N', // 'Q' = .
+  'Y', // 'R' = A,G = puRine
+  'S', // 'S' = G,C = Strong
+  'A', // 'T' = T
+  'A', // 'U' = T (RNA)
+  'B', // 'V' = not T = A,C,G
+  'W', // 'W' = A,T = Weak
+  'N', // 'X' = .
+  'R', // 'Y' = pYrimidine = C,T
+  'N', // 'Z' = .
+};
+
 void reverseComplement(const char * src, char * dest, int length)
 {
-	char table[4] = {'T','G','A','C'};
     for ( int i = 0; i < length; i++ )
     {
-        char base = src[i];
-        
-     //   switch ( base )
-     //   {
-     //       case 'A': base = 'T'; break;
-     //       case 'C': base = 'G'; break;
-     //       case 'G': base = 'C'; break;
-     //       case 'T': base = 'A'; break;
-     //       default: break;
-     //   }
-		base >>= 1;
-		base &= 0x03;
-
-        
-     //   dest[length - i - 1] = base;
-        dest[length - i - 1] = table[base];
+        dest[i] = complement[ (int) src[length-i-1] - (int) 'A' ];
     }
 }
 
