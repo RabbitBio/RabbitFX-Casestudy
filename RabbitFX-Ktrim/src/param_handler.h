@@ -219,11 +219,11 @@ int process_cmd_param( int argc, char * argv[], ktrim_param &kp ) {
 }
 
 void usage( ) {
-cerr << "\n\033[1;34mUsage: RabbitIO-Ktrim [options] -1/-U Read1.fq [ -2 Read2.fq ] -o out.prefix\033[0m\n\n"
+cerr << "\n\033[1;34mUsage: RabbitFX-Ktrim [options] -1/-U Read1.fq [ -2 Read2.fq ] -o out.prefix\033[0m\n\n"
 	 << "Ktrim Author : Kun Sun (sunkun@szbl.ac.cn)\n"
 	 << "Ktrim Version: " << VERSION << "\n\n"
 
-	 << "RabbitIO-KTrim is an enhanced version of Ktrim based on RabbitIO.\n\n"
+	 << "RabbitFX-KTrim is an enhanced version of Ktrim based on RabbitFX.\n\n"
 	 //<< "Ktrim is designed to perform adapter- and quality-trimming of FASTQ files.\n\n"
 
 	 << "Compulsory parameters:\n\n"

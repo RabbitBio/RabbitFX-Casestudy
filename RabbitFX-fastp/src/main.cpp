@@ -24,7 +24,7 @@ mutex logmtx;
 int main(int argc, char* argv[]){
     // display version info if no argument is given
     if(argc == 1) {
-        cerr << "RabbitIO-fastp: an ultra-fast all-in-one FASTQ preprocessor" << endl << "version " << RABBITQC_VER << endl;
+        cerr << "RabbitFX-fastp: an ultra-fast all-in-one FASTQ preprocessor" << endl << "version " << RABBITQC_VER << endl;
         //cerr << "fastp --help to see the help"<<endl;
         //return 0;
     }
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]){
         return 0;
     }
     if (argc == 2 && (strcmp(argv[1], "-v")==0 || strcmp(argv[1], "--version")==0)){
-        cerr << "RabbitIO-fastp " << RABBITQC_VER << endl;
+        cerr << "RabbitFX-fastp " << RABBITQC_VER << endl;
         return 0;
     }
 	//detect cpu cores using openmp
@@ -123,10 +123,10 @@ int main(int argc, char* argv[]){
     cmd.add<int>("overrepresentation_sampling", 'P', "one in (--overrepresentation_sampling) reads will be computed for overrepresentation analysis (1~10000), smaller is slower, default is 20.", false, 20);
     
     // reporting
-    cmd.add<string>("json", 'j', "the json format report file name", false, "RabbitIO-fastp.json");
-    cmd.add<string>("html", 'h', "the html format report file name", false, "RabbitIO-fastp.html");
+    cmd.add<string>("json", 'j', "the json format report file name", false, "RabbitFX-fastp.json");
+    cmd.add<string>("html", 'h', "the html format report file name", false, "RabbitFX-fastp.html");
     //cmd.add<string>("report_title", 'R', "should be quoted with \' or \", default is \"fastp report\"", false, "fastp report");
-    cmd.add<string>("report_title", 'R', "should be quoted with \' or \", default is \"RabbitIO-fastp report\"", false, "RabbitIO-fastp report");
+    cmd.add<string>("report_title", 'R', "should be quoted with \' or \", default is \"RabbitFX-fastp report\"", false, "RabbitFX-fastp report");
 
     // threading
     cmd.add<int>("thread", 'w', "worker thread number, default is [max CPU cores - 2]", false, nprocs);
@@ -408,7 +408,7 @@ int main(int argc, char* argv[]){
     cerr << endl << "JSON report: " << opt.jsonFile << endl;
     cerr << "HTML report: " << opt.htmlFile << endl;
     cerr << endl << command << endl;
-    cerr << "RabbitIO-fastp v" << RABBITQC_VER << ", time used: " << (t2)-t1 << " seconds" << endl;
+    cerr << "RabbitFX-fastp v" << RABBITQC_VER << ", time used: " << (t2)-t1 << " seconds" << endl;
 
     return 0;
 }

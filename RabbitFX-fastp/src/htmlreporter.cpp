@@ -103,7 +103,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
     }
 
     ofs << endl;
-    ofs << "<h1 style='text-align:left;'><a href='https://github.com/LeiHaoa/RabbitIO-fastp' target='_blank' style='color:#663355;text-decoration:none;'>" + mOptions->reportTitle + "</a>"<<endl;
+    ofs << "<h1 style='text-align:left;'><a href='https://github.com/RabbitBio/RabbitFX-fastp' target='_blank' style='color:#663355;text-decoration:none;'>" + mOptions->reportTitle + "</a>"<<endl;
     ofs << "<div class='section_div'>\n";
     ofs << "<div class='section_title' onclick=showOrHide('summary')><a name='summary'>Summary</a></div>\n";
     ofs << "<div id='summary'>\n";
@@ -111,7 +111,7 @@ void HtmlReporter::printSummary(ofstream& ofs, FilterResult* result, Stats* preS
     ofs << "<div class='subsection_title' onclick=showOrHide('general')>General</div>\n";
     ofs << "<div id='general'>\n";
     ofs << "<table class='summary_table'>\n";
-    outputRow(ofs, "RabbitIO-fastp version:", string(RABBITQC_VER)+ " (<a href='https://github.com/LeiHaoa/RabbitIO-fastp'>https://github.com/LeiHaoa/RabbitIO-fastp</a>)");
+    outputRow(ofs, "RabbitFX-fastp version:", string(RABBITQC_VER)+ " (<a href='https://github.com/RabbitBio/RabbitFX-fastp'>https://github.com/RabbitBio/RabbitFX-fastp</a>)");
     outputRow(ofs, "sequencing:", sequencingInfo);
 
     // report read length change
@@ -366,8 +366,8 @@ void HtmlReporter::report(FilterResult* result, Stats* preStats1, Stats* postSta
 
 void HtmlReporter::printHeader(ofstream& ofs){
     ofs << "<html><head><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\" />";
-    //ofs << "<title>RabbitIO-fastp report at " + getCurrentSystemTime() + " </title>";
-    ofs << "<title>RabbitIO-fastp report at " + getCurrentSystemTime() + " </title>";
+    //ofs << "<title>RabbitFX-fastp report at " + getCurrentSystemTime() + " </title>";
+    ofs << "<title>RabbitFX-fastp report at " + getCurrentSystemTime() + " </title>";
     printJS(ofs);
     printCSS(ofs);
     ofs << "</head>";
@@ -429,6 +429,6 @@ void HtmlReporter::printFooter(ofstream& ofs){
     ofs << "\n</div>" << endl;
     ofs << "<div id='footer'> ";
     ofs << "<p>"<<command<<"</p>";
-    ofs << "RabbitIO-fastp " << RABBITQC_VER << ", at " << getCurrentSystemTime() << " </div>";
+    ofs << "RabbitFX-fastp " << RABBITQC_VER << ", at " << getCurrentSystemTime() << " </div>";
     ofs << "</body></html>";
 }

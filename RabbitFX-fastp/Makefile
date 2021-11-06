@@ -10,7 +10,7 @@ LIBRARY_DIRS ?=
 SRC := $(wildcard ${DIR_SRC}/*.cpp)
 OBJ := $(patsubst %.cpp,${DIR_OBJ}/%.o,$(notdir ${SRC}))
 
-TARGET := RabbitIO-fastp
+TARGET := RabbitFX-fastp
 
 BIN_TARGET := ${TARGET}
 

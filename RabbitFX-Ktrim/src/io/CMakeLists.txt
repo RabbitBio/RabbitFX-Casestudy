@@ -22,7 +22,5 @@ add_library(io_lib ${SOURCE_LIST})
 #message(${SOURCE_LIST})
 #include_directories(.)
 
-#add_executable (RabbitIO ${SOURCE_LIST})
 
 target_link_libraries(io_lib z)
-#target_link_libraries(RabbitIO)

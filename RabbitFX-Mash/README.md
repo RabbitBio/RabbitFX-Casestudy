@@ -1,6 +1,6 @@
-# RabbitIO-Mash
+# RabbitFX-Mash
 
-RabbitIO-Mash is an efficient highly optimized implementation of [Mash](https://github.com/marbl/Mash) which can take full advantage of modern hardware including multi-threading, vectorization, and fast I/O.
+RabbitFX-Mash is an efficient highly optimized implementation of [Mash](https://github.com/marbl/Mash) which can take full advantage of modern hardware including multi-threading, vectorization, and fast I/O.
 
 ## Build
 
@@ -14,7 +14,7 @@ RabbitIO-Mash is an efficient highly optimized implementation of [Mash](https://
 **Build:**
 
 ```bash
-cd RabbitIO-Mash
+cd RabbitFX-Mash
 ./bootstrap.sh
 ./configure [--prefix=...] [--with-capnp=...] [--with-gsl=...] \
             [--with-simd=yes/no]

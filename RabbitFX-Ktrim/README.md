@@ -1,5 +1,5 @@
-# RabbitIO-Ktrim
-RabbitIO-Ktrim is an enhanced version of [Ktrim](https://github.com/hellosunking/Ktrim) based on [RabbitIO](https://github.com/RabbitBio/RabbitIO).
+# RabbitFX-Ktrim
+RabbitFX-Ktrim is an enhanced version of [Ktrim](https://github.com/hellosunking/Ktrim) based on [RabbitFX](https://github.com/RabbitBio/RabbitFX).
 
 ## Installation
 
@@ -7,8 +7,8 @@ you can re-compile the programs:
 
 ```bash
 
-git https://github.com/RabbitBio/RabbitIO-Casestudy.git
-cd RabbitIO-Casestudy/RabbitIO-Ktrim
+git https://github.com/RabbitBio/RabbitFX-Casestudy.git
+cd RabbitFX-Casestudy/RabbitFX-Ktrim
 mkdir build
 cd build
 cmake ..
@@ -18,9 +18,9 @@ make
 ## Usage
 
 ```bash
-Usage: RabbitIO-Ktrim [options] -1/-U Read1.fq [ -2 Read2.fq ] -o out.prefix
+Usage: RabbitFX-Ktrim [options] -1/-U Read1.fq [ -2 Read2.fq ] -o out.prefix
 
-RabbitIO-Ktrim is an enhanced version of Ktrim based on RabbitIO.
+RabbitFX-Ktrim is an enhanced version of Ktrim based on RabbitFX.
 
 Compulsory parameters:
 
@@ -70,7 +70,7 @@ Optional parameters:
 
 Please refer to README.md file for more information (e.g., setting adapters).
 
-RabbitIO-Ktrim: enhanced extra-fast and accurate adapter- and quality-trimmer based on Ktrim.
+RabbitFX-Ktrim: enhanced extra-fast and accurate adapter- and quality-trimmer based on Ktrim.
 ```
 
 `Ktrim` contains built-in adapter sequences used by Illumina TruSeq kits, Nextera kits, Nextera transposase
@@ -98,7 +98,7 @@ Read 2: AAGTCGGATCGTAGCCATGT
 Your data is generated using Illumina TruSeq kit in Single-end mode, then you can run:
 
 ```bash
-./RabbitIO-Ktrim -U /path/to/read1.fq -o /path/to/output/dir
+./RabbitFX-Ktrim -U /path/to/read1.fq -o /path/to/output/dir
 ```
 
 ### Example 2
@@ -109,7 +109,7 @@ bases and reads longer than 50 bp after trimming; and you want to use 4 threads 
 then you can run:
 
 ```bash
-./RabbitIO-Ktrim -1 /path/to/lane1.read1.fq.gz,/path/to/lane2.read1.fq.gz,/path/to/lane3.read1.fq \
+./RabbitFX-Ktrim -1 /path/to/lane1.read1.fq.gz,/path/to/lane2.read1.fq.gz,/path/to/lane3.read1.fq \
                   -2 /path/to/lane1.read2.fq.gz,/path/to/lane2.read2.fq.gz,/path/to/lane3.read2.fq \
                   -t 4 -p 35 -q 30 -s 50 -o /path/to/output/dir \
                   -a READ1_ADAPTER_SEQUENCE -b READ2_ADAPTER_SEQUENCE
@@ -131,4 +131,4 @@ contains adapters and the number of reads in the trimmed files).
 
 ## Notice
 
-This is a case study of our RabbitIO project.
+This is a case study of our RabbitFX project.

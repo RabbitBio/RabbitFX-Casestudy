@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(RabbitIO-Ktrim)
+project(RabbitFX-Ktrim)
 #openmp
 find_package(OpenMP REQUIRED)
 if(OPENMP_FOUND)
@@ -23,7 +23,6 @@ add_subdirectory(src/io)
 #include_directories(./src)
 
 add_executable (${PROJECT_NAME} src/main.cpp)
-#add_executable (RabbitIO ${SOURCE_LIST})
 
 target_link_libraries(${PROJECT_NAME} z)
 target_link_libraries(${PROJECT_NAME} io_lib)
