@@ -72,8 +72,7 @@ namespace dsrc{
 #if defined(USE_IGZIP)
                     mFile = fopen(fileName_.c_str(), "rb");
                     if (mFile == NULL){
-                        throw RioException(
-                                ("Can not open file to read: " + fileName_).c_str());  
+                      cerr << "Can not open file to read: " + fileName_ << endl;  
                     }
                     mIgInbuf = new unsigned char[IGZIP_IN_BUF_SIZE];
                     isal_gzip_header_init(&mIgzipHeader);
@@ -189,16 +188,13 @@ namespace dsrc{
             int64 Read(dsrc::byte *memory_, uint64 size_) {
                 if (isZipped) {
 #if defined(USE_IGZIP)			
-                    cerr << "using igzip read zip file" << endl;
                     int64 n = igzip_read(mFile, memory_, size_);
 #else
-                    cerr << "using zlib read zip file" << endl;
                     int64 n = gzread(mZipFile, memory_, size_);
 #endif
                     if (n == -1) std::cerr << "Error to read gzip file" << std::endl;
                     return n;
                 } else {
-                    cerr << "read plat file" << endl;
                     int64 n = fread(memory_, 1, size_, mFile);
                     return n;
                 }
