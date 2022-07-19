@@ -25,4 +25,4 @@ add_subdirectory(src/io)
 add_executable (${PROJECT_NAME} src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME} z)
-target_link_libraries(${PROJECT_NAME} io_lib)
+target_link_libraries(${PROJECT_NAME} rabbitfx)

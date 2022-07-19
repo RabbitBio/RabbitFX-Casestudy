@@ -1,9 +1,9 @@
 /*
   This file is a part of DSRC software distributed under GNU GPL 2 licence.
   The homepage of the DSRC project is http://sun.aei.polsl.pl/dsrc
-  
+
   Authors: Lucas Roguski and Sebastian Deorowicz
-  
+
   Version: 2.00
 
   last modified by Zekun Yin 2020/5/18
@@ -12,49 +12,46 @@
 #ifndef H_FASTX_CHUNK
 #define H_FASTX_CHUNK
 
-#include "Globals.h"
-#include "Common.h"
-#include "Buffer.h"
-#include "utils.h"
-#include "DataQueue.h"
-#include "DataPool.h"
-
-#include <vector>
 #include <iostream>
+#include <vector>
 
-namespace mash
-{
+#include "Buffer.h"
+#include "Common.h"
+#include "DataPool.h"
+#include "DataQueue.h"
+#include "Globals.h"
+#include "utils.h"
 
-namespace fa
-{
+namespace rabbit {
+
+namespace fa {
 
 typedef core::DataChunk FastaDataChunk;
-
+/// fasta data queue
 typedef core::TDataQueue<FastaDataChunk> FastaDataQueue;
+/// fasta data pool
 typedef core::TDataPool<FastaDataChunk> FastaDataPool;
 
-struct FastaChunk{
+/*
+ * @brief Fasta data chunk class
+ */	
+struct FastaChunk {
+  FastaDataChunk *chunk;
+  uint64 start;
+  uint64 end;
+  uint64 nseqs;
 
-	FastaDataChunk * chunk;
-	uint64 start;
-	uint64 end;
-	uint64 nseqs;
-	//bool startSplit;
-	//bool endSplit;
-
-	void print(){
-		std::cout << "chunk start: " << this->start << std::endl;	
-		std::cout << "chunk end: "   << this->end   << std::endl;	
-		std::cout << "chunk nseqs: " << this->nseqs << std::endl;	
-		return;
-	}
+  void print() {
+    std::cout << "chunk start: " << this->start << std::endl;
+    std::cout << "chunk end: " << this->end << std::endl;
+    std::cout << "chunk nseqs: " << this->nseqs << std::endl;
+    return;
+  }
 };
-
 
 } // namespace fa
 
-namespace fq
-{
+namespace fq {
 
 typedef core::DataChunk FastqDataChunk;
 typedef core::DataPairChunk FastqDataPairChunk;
@@ -62,28 +59,25 @@ typedef core::DataPairChunk FastqDataPairChunk;
 typedef core::TDataQueue<FastqDataChunk> FastqDataQueue;
 typedef core::TDataPool<FastqDataChunk> FastqDataPool;
 
-struct FastqChunk{
-
-	FastqDataChunk * chunk;
-	//uint64 start;
-	//uint64 end;
-	//uint64 nseqs;
-	////bool startSplit;
-	////bool endSplit;
-
-	//void print(){
-	//	std::cout << "chunk start: " << this->start << std::endl;	
-	//	std::cout << "chunk end: "   << this->end   << std::endl;	
-	//	std::cout << "chunk nseqs: " << this->nseqs << std::endl;	
-	//	return;
-	//}
+/*
+ * @brief Fastq single-end data class
+ */	
+struct FastqChunk {
+	/// chunk data \n FastqDataChunk is defined as: `typedef core::DataChunk FastqDataChunk;`
+  FastqDataChunk *chunk;
 };
-struct FastqPairChunk{
-	FastqDataPairChunk * chunk;
+
+/*
+ * @brief Fastq pair-end data class
+ * @details Fastq pair-end data class, include left part and right part, each part is FastqChunk class
+ */	
+struct FastqPairChunk {
+	/// chunk data
+  FastqDataPairChunk *chunk;
 };
 
 } // namespace fq
 
-} // namespace mash
+} // namespace rabbit
 
 #endif

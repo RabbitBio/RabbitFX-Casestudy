@@ -14,7 +14,8 @@
 #include <zlib.h>
 #include "common.h"
 #include "util.h"
-#include "io/FastxIO.h"
+//#include "io/FastxIO.h"
+#include "io/Formater.h"
 #include "io/FastxStream.h"
 #include "io/FastxChunk.h"
 #include "io/DataQueue.h"
@@ -136,14 +137,14 @@ void workingThread_SE_C( unsigned int tn, unsigned int start, unsigned int end, 
 	}
 }
 
-int producer_fastq_task(std::string file, mash::fq::FastqDataPool* fastqPool, FqChunkQueue &dq){
-    mash::fq::FastqFileReader *fqFileReader;
-    fqFileReader = new mash::fq::FastqFileReader(file, *fastqPool);
+int producer_fastq_task(std::string file, rabbit::fq::FastqDataPool* fastqPool, FqChunkQueue &dq){
+    rabbit::fq::FastqFileReader *fqFileReader;
+    fqFileReader = new rabbit::fq::FastqFileReader(file, *fastqPool);
     int n_chunks = 0;
     int line_sum = 0;
 		double pstart = get_time();
     while(true){
-        mash::fq::FastqChunk *fqchunk = new mash::fq::FastqChunk;
+        rabbit::fq::FastqChunk *fqchunk = new rabbit::fq::FastqChunk;
         fqchunk->chunk = fqFileReader->readNextChunk();
         if (fqchunk->chunk == NULL) break;
         n_chunks++;
@@ -156,8 +157,8 @@ int producer_fastq_task(std::string file, mash::fq::FastqDataPool* fastqPool, Fq
 	//					 "use time: " << pend - pstart << std::endl;
     return 0;
 }
-int myChunkFormat(mash::fq::FastqChunk* &fqChunk, std::vector<CSEREAD> &data, bool mHasQuality = true){
-	mash::fq::FastqDataChunk * chunk = fqChunk->chunk;
+int myChunkFormat(rabbit::fq::FastqChunk* &fqChunk, std::vector<CSEREAD> &data, bool mHasQuality = true){
+	rabbit::fq::FastqDataChunk * chunk = fqChunk->chunk;
 	uint64_t seq_count = 0;
 	uint64_t pos_ = 0;
 	neoReference ref;
@@ -165,15 +166,15 @@ int myChunkFormat(mash::fq::FastqChunk* &fqChunk, std::vector<CSEREAD> &data, bo
 	while(true){
 		ref.base = chunk->data.Pointer();
 		ref.pname = pos_;
-		if(mash::fq::neoGetLine(chunk, pos_, ref.lname)){
+		if(rabbit::fq::neoGetLine(chunk, pos_, ref.lname)){
 			ref.pseq = pos_; 
 		} 
 		else{ break;}
-		mash::fq::neoGetLine(chunk, pos_, ref.lseq); 
+		rabbit::fq::neoGetLine(chunk, pos_, ref.lseq); 
 		ref.pstrand = pos_; 
-		mash::fq::neoGetLine(chunk, pos_, ref.lstrand); 
+		rabbit::fq::neoGetLine(chunk, pos_, ref.lstrand); 
 		ref.pqual = pos_;  
-		mash::fq::neoGetLine(chunk, pos_, ref.lqual);
+		rabbit::fq::neoGetLine(chunk, pos_, ref.lqual);
 		seq_count++;
 		//std::cout << "info: " << std::string((char*)ref.base + ref.pname, ref.lname) << " \n"
 		//		<< std::string((char*)ref.base + ref.pseq , ref.lseq)  << "\n"
@@ -198,15 +199,15 @@ int myChunkFormat(mash::fq::FastqChunk* &fqChunk, std::vector<CSEREAD> &data, bo
 	return seq_count;
 }
 
-void consumer_fastq_task(mash::fq::FastqDataPool* fastqPool, FqChunkQueue &dq, writeBufferQueue &dq2, ktrim_param* kp, ktrim_stat &kstat){
+void consumer_fastq_task(rabbit::fq::FastqDataPool* fastqPool, FqChunkQueue &dq, writeBufferQueue &dq2, ktrim_param* kp, ktrim_stat &kstat){
 	//format 
 	long line_sum = 0;
-    mash::int64 id = 0;
-    mash::fq::FastqChunk *fqchunk = new mash::fq::FastqChunk;
+    rabbit::int64 id = 0;
+    rabbit::fq::FastqChunk *fqchunk = new rabbit::fq::FastqChunk;
 
 
 
-  	mash::int64 wb_id = 0;
+  	rabbit::int64 wb_id = 0;
   	while(dq.Pop(id, fqchunk->chunk)){
 		std::vector<CSEREAD> data;
 		data.reserve(10000);
@@ -242,7 +243,7 @@ void writer_fastq_task(writeBufferQueue& dq, ktrim_param *kp, ktrim_stat* kstats
 	fileName += ".read1.fq";
 	FILE* fout1 = fopen(fileName.c_str(), "wt");
 	writeBuffer *writebuffer;
-	mash::int64 id = 0;
+	rabbit::int64 id = 0;
 	double wstart = get_time();
 	while(dq.Pop(id, writebuffer)){
 		fwrite(writebuffer->buffer1[0], sizeof(char), writebuffer->b1stored[0], fout1);
@@ -282,7 +283,7 @@ void writer_fastq_task(writeBufferQueue& dq, ktrim_param *kp, ktrim_stat* kstats
 }
 
 int process_SE_C(ktrim_param *kp){
-	mash::fq::FastqDataPool *fastqPool = new mash::fq::FastqDataPool(32, 1<<22);
+	rabbit::fq::FastqDataPool *fastqPool = new rabbit::fq::FastqDataPool(32, 1<<22);
 	FqChunkQueue queue1(64, 1);  //  because 1 producer;
 	writeBufferQueue queue2(128, kp->thread);
 

@@ -84,9 +84,9 @@ typedef struct {
 	unsigned int *b2stored;
 } writeBuffer;
 
-typedef  mash::core::TDataQueue<mash::fq::FastqDataPairChunk> FqPairChunkQueue;
-typedef  mash::core::TDataQueue<mash::fq::FastqDataChunk> FqChunkQueue;
-typedef  mash::core::TDataQueue<writeBuffer> writeBufferQueue;
+typedef  rabbit::core::TDataQueue<rabbit::fq::FastqDataPairChunk> FqPairChunkQueue;
+typedef  rabbit::core::TDataQueue<rabbit::fq::FastqDataChunk> FqChunkQueue;
+typedef  rabbit::core::TDataQueue<writeBuffer> writeBufferQueue;
 
 // built-in adapters
 const unsigned int MIN_ADAPTER_SIZE = 8;

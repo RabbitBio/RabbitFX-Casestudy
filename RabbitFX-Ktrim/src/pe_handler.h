@@ -13,6 +13,7 @@
 #include <memory.h>
 #include <omp.h>
 #include "common.h"
+#include "io/Formater.h"
 using namespace std;
 
 
@@ -187,10 +188,10 @@ void workingThread_PE_C( unsigned int tn, unsigned int start, unsigned int end, 
 	delete [] seed;
 }
 
-int myPEFormat(mash::fq::FastqPairChunk* &fqChunk, std::vector<CPEREAD> &data, bool mHasQuality = true){
-	mash::fq::FastqDataPairChunk * chunk = fqChunk->chunk;
-	mash::fq::FastqDataChunk* left_p  = chunk->left_part;
-	mash::fq::FastqDataChunk* right_p  = chunk->right_part;
+int myPEFormat(rabbit::fq::FastqPairChunk* &fqChunk, std::vector<CPEREAD> &data, bool mHasQuality = true){
+	rabbit::fq::FastqDataPairChunk * chunk = fqChunk->chunk;
+	rabbit::fq::FastqDataChunk* left_p  = chunk->left_part;
+	rabbit::fq::FastqDataChunk* right_p  = chunk->right_part;
 	uint64_t seq_count = 0;
 	uint64_t pos_ = 0;
 	uint64_t pos2_ = 0;
@@ -200,27 +201,27 @@ int myPEFormat(mash::fq::FastqPairChunk* &fqChunk, std::vector<CPEREAD> &data, b
 	while(true){
 		ref_l.base = left_p->data.Pointer();
 		ref_l.pname = pos_;
-		if(mash::fq::neoGetLine(left_p, pos_, ref_l.lname)){
+		if(rabbit::fq::neoGetLine(left_p, pos_, ref_l.lname)){
 			ref_l.pseq = pos_; 
 		} 
 		else{ break;}
-		mash::fq::neoGetLine(left_p, pos_, ref_l.lseq); 
+		rabbit::fq::neoGetLine(left_p, pos_, ref_l.lseq); 
 		ref_l.pstrand = pos_; 
-		mash::fq::neoGetLine(left_p, pos_, ref_l.lstrand); 
+		rabbit::fq::neoGetLine(left_p, pos_, ref_l.lstrand); 
 		ref_l.pqual = pos_;  
-		mash::fq::neoGetLine(left_p, pos_, ref_l.lqual);
+		rabbit::fq::neoGetLine(left_p, pos_, ref_l.lqual);
 
 		ref_r.base = right_p->data.Pointer();
 		ref_r.pname = pos2_;
-		if(mash::fq::neoGetLine(right_p, pos2_, ref_r.lname)){
+		if(rabbit::fq::neoGetLine(right_p, pos2_, ref_r.lname)){
 			ref_r.pseq = pos2_; 
 		} 
 		else{ break;}
-		mash::fq::neoGetLine(right_p, pos2_, ref_r.lseq); 
+		rabbit::fq::neoGetLine(right_p, pos2_, ref_r.lseq); 
 		ref_r.pstrand = pos2_; 
-		mash::fq::neoGetLine(right_p, pos2_, ref_r.lstrand); 
+		rabbit::fq::neoGetLine(right_p, pos2_, ref_r.lstrand); 
 		ref_r.pqual = pos2_;  
-		mash::fq::neoGetLine(right_p, pos2_, ref_r.lqual);
+		rabbit::fq::neoGetLine(right_p, pos2_, ref_r.lqual);
 
 		seq_count++;
 		//std::cout << "info: " << std::string((char*)ref.base + ref.pname, ref.lname) << " \n"
@@ -250,15 +251,15 @@ int myPEFormat(mash::fq::FastqPairChunk* &fqChunk, std::vector<CPEREAD> &data, b
 	return seq_count;	
 }
 
-int producer_pe_task(std::string file, std::string file2, mash::fq::FastqDataPool* fastqPool, FqPairChunkQueue &dq ) {
+int producer_pe_task(std::string file, std::string file2, rabbit::fq::FastqDataPool* fastqPool, FqPairChunkQueue &dq ) {
 
-    mash::fq::FastqFileReader *fqFileReader;
-    fqFileReader = new mash::fq::FastqFileReader(file, *fastqPool, file2, false);
+    rabbit::fq::FastqFileReader *fqFileReader;
+    fqFileReader = new rabbit::fq::FastqFileReader(file, *fastqPool, file2, false);
     int n_chunks = 0;
     int line_sum = 0;
 	//double pstart = get_time();
     while(true){
-        mash::fq::FastqPairChunk *fqchunk = new mash::fq::FastqPairChunk;
+        rabbit::fq::FastqPairChunk *fqchunk = new rabbit::fq::FastqPairChunk;
         fqchunk->chunk = fqFileReader->readNextPairChunk();
         if (fqchunk->chunk == NULL) break;
         n_chunks++;
@@ -272,11 +273,11 @@ int producer_pe_task(std::string file, std::string file2, mash::fq::FastqDataPoo
 	return 0;
 }
 
-int consumer_pe_task(mash::fq::FastqDataPool* fastqPool, FqPairChunkQueue &dq, writeBufferQueue &dq2, ktrim_param* kp,ktrim_stat &kstat ) {
+int consumer_pe_task(rabbit::fq::FastqDataPool* fastqPool, FqPairChunkQueue &dq, writeBufferQueue &dq2, ktrim_param* kp,ktrim_stat &kstat ) {
 	
 	long line_sum = 0;
-	mash::int64 id = 0;
-    mash::fq::FastqPairChunk *fqchunk = new mash::fq::FastqPairChunk;
+	rabbit::int64 id = 0;
+    rabbit::fq::FastqPairChunk *fqchunk = new rabbit::fq::FastqPairChunk;
 	
 	
 
@@ -286,7 +287,7 @@ int consumer_pe_task(mash::fq::FastqDataPool* fastqPool, FqPairChunkQueue &dq, w
 /*
 	
 */
-  	mash::int64 wb_id = 0;
+  	rabbit::int64 wb_id = 0;
 
 	while( dq.Pop(id, fqchunk->chunk) ) {
 		// get fastq reads
@@ -336,7 +337,7 @@ int writer_pe_task(writeBufferQueue& dq, ktrim_param *kp,ktrim_stat* kstats) {
 	}
 
 	writeBuffer *writebuffer;
-	mash::int64 id = 0;
+	rabbit::int64 id = 0;
 	//double wstart = get_time();
 	while(dq.Pop(id, writebuffer)){
 		fwrite(writebuffer->buffer1[0], sizeof(char), writebuffer->b1stored[0], fout1);
@@ -378,7 +379,7 @@ int writer_pe_task(writeBufferQueue& dq, ktrim_param *kp,ktrim_stat* kstats) {
 
 int process_PE_C(ktrim_param *kp) {
 
-	mash::fq::FastqDataPool *fastqPool = new mash::fq::FastqDataPool(256, 1<<22);
+	rabbit::fq::FastqDataPool *fastqPool = new rabbit::fq::FastqDataPool(256, 1<<22);
 	FqPairChunkQueue queue1(128, 1);  //  because 1 producer;
 	writeBufferQueue queue2(256, kp->thread);
 

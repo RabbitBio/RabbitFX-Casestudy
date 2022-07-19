@@ -1,4 +1,4 @@
-#include "io/FastxIO.h"
+//#include "io/FastxIO.h"
 #include "io/FastxStream.h"
 #include "io/FastxChunk.h"
 #include <string>
@@ -11,17 +11,17 @@
 #include "pe_handler.h"
 #include "se_handler.h"
 
-typedef  mash::core::TDataQueue<mash::fq::FastqDataChunk> FqChunkQueue;
+typedef  rabbit::core::TDataQueue<rabbit::fq::FastqDataChunk> FqChunkQueue;
 
-int count_line(mash::fq::FastqChunk* fqchunk){
+int count_line(rabbit::fq::FastqChunk* fqchunk){
     return 1000;
 }
 
 /*
 int producer_fastq_task(std::string file, mash::fq::FastqDataPool* fastqPool, FqChunkQueue &dq){
-    mash::fq::FastqFileReader *fqFileReader;
+    rabbit::fq::FastqFileReader *fqFileReader;
     //mash::fq::FastqReader *fastqReader;
-    fqFileReader = new mash::fq::FastqFileReader(file, *fastqPool, false);
+    fqFileReader = new rabbit::fq::FastqFileReader(file, *fastqPool, false);
     //fastqReader = new mash::fq::FastqReader(*fqFileReader, *fastqPool);  //没有必要再分fastqreader和fastareader了，只要上面的filereader是不同的类型就可以了。函数重载readnextchunk和
     int n_chunks = 0;
     int line_sum = 0;
