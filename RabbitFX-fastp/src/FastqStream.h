@@ -20,6 +20,8 @@
 #include "Buffer.h"
 #include "zlib/zlib.h"
 #include "util.h"
+#include "FileReader.h"
+
 #if defined (_WIN32)
 #   define _CRT_SECURE_NO_WARNINGS
 #   pragma warning(disable : 4996) // D_SCL_SECURE
@@ -64,6 +66,7 @@ class FastqFileReader
 private:
 	static const uint32 SwapBufferSize = 1 << 20;
 	//static const uint32 SwapBufferSize = 1 << 13;
+  FileReader* mFqReader;
 
 public:
 	FastqFileReader(const std::string& fileName_)
@@ -74,24 +77,15 @@ public:
 		,	isZipped(false)
 	{	
 		if(ends_with(fileName_,".gz")){
-			mZipFile = gzopen(fileName_.c_str(),"r");
-			isZipped=true;
-			gzrewind(mZipFile);
-
-		}else{
-			mFile = FOPEN(fileName_.c_str(), "rb");
-			if(mFile == NULL){
-				throw DsrcException(("Can not open file to read: " + fileName_).c_str()); //--------------need to change----------//
-			}
+      isZipped = true;
 		}
-		
-			
-	}
+    mFqReader = new FileReader(fileName_, isZipped);
+  }
 
 	~FastqFileReader()
 	{
 		if(mFile != NULL || mZipFile !=NULL)
-			Close();
+			delete mFqReader;
 		delete mFile;
 		//delete mZipFile;
 	}
@@ -115,7 +109,7 @@ public:
 		mFile = NULL;
 	}
 
-	int64 Read(byte* memory_, uint64 size_)
+	int64 Read_back(byte* memory_, uint64 size_)
 	{	if(isZipped){
 			int64 n = gzread(mZipFile,memory_,size_);
 			if(n == -1)
@@ -126,9 +120,10 @@ public:
 			int64 n = fread(memory_, 1, size_, mFile) ;
 			return n;
 		}
-		
-		
 	}
+  int64 Read(byte* memory_, uint64 size_){
+    return mFqReader->Read(memory_, size_);
+  }
 private:
 	core::Buffer	swapBuffer;
 	uint64			bufferSize;
