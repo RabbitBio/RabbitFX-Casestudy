@@ -14,6 +14,13 @@ set(EXECUTABLE_OUTPUT_PATH .)
 endif()
 #link
 
+#----------IGZIP---------------#
+if(DEFINED IGZIP_PREFIX)
+	include_directories(${IGZIP_PREFIX}/include)
+	link_directories(${IGZIP_PREFIX}/lib)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_IGZIP -lisal")
+endif()
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "-O3 -g -ffast-math ${CMAKE_CXX_FLAGS}")
