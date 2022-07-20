@@ -21,6 +21,7 @@
 #include <iostream>
 #include <string>
 #include <zlib.h> //support gziped files, functional but inefficient
+#include "FileReader.h"
 
 
 #if defined (_WIN32)
@@ -70,6 +71,7 @@ private:
 	//static const uint32 SwapBufferSize = 1 << 20;
 	static const uint32 SwapBufferSize = 1 << 26;//16MB
 	//static const uint32 SwapBufferSize = 1 << 13;
+  FileReader* mFaReader;
 
 public:
 	FastaFileReader(const std::string& fileName_, uint64 halo = 21, bool isZippedNew = false)
@@ -82,24 +84,15 @@ public:
 		,	isZipped(isZippedNew)
 	{	
 		//if(ends_with(fileName_,".gz"))
-		if(isZipped)
+		if(isZipped || ends_with(fileName_, ".gz"))
 		{
-			mZipFile = gzopen(fileName_.c_str(),"r");
-			//isZipped=true;
-			gzrewind(mZipFile);
-
-		}else{
-			mFile = FOPEN(fileName_.c_str(), "rb");
-			std::cerr << "fasta file name: " << fileName_.c_str() << std::endl;
-			if(mFile == NULL){
-				throw DsrcException(("Can not open file to read: " + fileName_).c_str()); //--------------need to change----------//
-			}
+      isZipped = true;
 		}
-		
+    mFaReader = new FileReader(fileName_, isZipped);
 			
 	}
 
-	FastaFileReader(int fd, uint64 halo = 21, bool isZippedNew = false)
+  FastaFileReader(const int fd, uint64 halo = 21, bool isZippedNew = false)
 		:	swapBuffer(SwapBufferSize)
 		,	bufferSize(0)
 		,	eof(false)
@@ -108,31 +101,16 @@ public:
 		,	mHalo(halo)
 		,	isZipped(isZippedNew)
 	{	
-		if(isZipped)
-		{
-			mZipFile = gzdopen(fd,"r");
-			if(mZipFile == NULL){
-				throw DsrcException("Can not open file to read!"); //--------------need to change----------//
-			}
-			gzrewind(mZipFile);
-
-		}else{
-
-			mFile = FDOPEN(fd, "rb");
-			if(mFile == NULL){
-				throw DsrcException("Can not open file to read!"); //--------------need to change----------//
-			}
-		
-		}
+		//if(ends_with(fileName_,".gz"))
+    mFaReader = new FileReader(fd, isZipped);
+			
 	}
 
 	~FastaFileReader()
 	{
 		//std::cerr << "totalSeqs: " << this->totalSeqs << std::endl;
 		if(mFile != NULL || mZipFile != NULL)
-			Close();
-		//delete mFile;
-		//delete mZipFile;
+			delete mFaReader;
 	}
 
 	bool Eof() const
@@ -156,7 +134,7 @@ public:
 
 	}
 
-	int64 Read(byte* memory_, uint64 size_)
+	int64 Read_back(byte* memory_, uint64 size_)
 	{	
 		if(isZipped){
 			int64 n = gzread(mZipFile,memory_,size_);
@@ -169,6 +147,10 @@ public:
 			return n;
 		}
 	}
+
+  int64 Read(byte* memory_, uint64 size_){
+    return mFaReader->Read(memory_, size_);
+  }
 
 private:
 	core::Buffer	swapBuffer;
@@ -288,6 +270,7 @@ class FastqFileReader
 {
 private:
 	static const uint32 SwapBufferSize = 1 << 20; // the longest FASTQ sequence todate is no longer than 1Mbp. 
+  FileReader* mFqReader;
 
 public:
 	FastqFileReader(const std::string& fileName_, bool isZippedNew = false)
@@ -299,59 +282,26 @@ public:
 	{	
 		//if(ends_with(fileName_,".gz"))
 		if(isZipped){
-			mZipFile = gzopen(fileName_.c_str(),"r");
-		  if(mZipFile == NULL){
-		  	throw DsrcException(("Can not open file to read: " + fileName_).c_str()); //--------------need to change----------//
-		  }
-			//isZipped=true;
-			gzrewind(mZipFile);
-
-		}else{
-		  mFile = FOPEN(fileName_.c_str(), "rb");
-		  if(mFile == NULL){
-		  	throw DsrcException(("Can not open file to read: " + fileName_).c_str()); //--------------need to change----------//
+      isZipped = true;
 		}
-	}
-		
-			
+    mFqReader = new FileReader(fileName_, isZipped);
 	}
 
-	FastqFileReader(int fd, bool isZippedNew = false)
-		:	swapBuffer(SwapBufferSize)
-		,	bufferSize(0)
-		,	eof(false)
-		,	usesCrlf(false)
-		,	isZipped(isZippedNew)
-	{	
-		//if(ends_with(fileName_,".gz"))
-		if(isZipped){
-			mZipFile = gzdopen(fd, "r");
-			//isZipped=true;
-			if(mZipFile == NULL){
-		  		throw DsrcException("Can not open file to read: " ); //--------------need to change----------//
-			}
+  FastqFileReader(int fd, bool isZippedNew = false)
+      : swapBuffer(SwapBufferSize)
+      , bufferSize(0)
+      , eof(false)
+      , usesCrlf(false)
+      , isZipped(isZippedNew)
+  {
+    mFqReader = new FileReader(fd, isZipped);
+  }
 
-			gzrewind(mZipFile);
-
-		}else{
-		  mFile = FDOPEN(fd, "rb");
-		  if(mFile == NULL){
-		  	throw DsrcException("Can not open file to read: " ); //--------------need to change----------//
-		}
-	}
-		
-			
-	}
-
-	~FastqFileReader()
+  ~FastqFileReader()
 	{
 		//if( mFile != NULL )
 		if(mFile != NULL || mZipFile !=NULL)
-			Close();
-		//if(mFile != NULL)
-		//	delete mFile;
-		//if(mZipFile != NULL)
-		//	delete mZipFile;
+			delete mFqReader;
 	}
 
 	bool Eof() const
@@ -374,7 +324,7 @@ public:
 
 	}
 
-	int64 Read(byte* memory_, uint64 size_)
+	int64 Read_back(byte* memory_, uint64 size_)
 	{	
 		if(isZipped){
 			int64 n = gzread(mZipFile,memory_,size_);
@@ -386,8 +336,12 @@ public:
 		  int64 n = fread(memory_, 1, size_, mFile) ;
 		  return n;
 		}
-		
-	}
+  }
+  int64 Read(byte *memory_, uint64 size_)
+  {
+    return mFqReader->Read(memory_, size_);
+  }
+
 private:
 	core::Buffer	swapBuffer;
 	uint64			bufferSize;

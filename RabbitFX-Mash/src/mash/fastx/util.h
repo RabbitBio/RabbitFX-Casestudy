@@ -12,24 +12,24 @@
 
 using namespace std;
 
-inline char complement(char base) {
-    switch(base){
-        case 'A':
-        case 'a':
-            return 'T';
-        case 'T':
-        case 't':
-            return 'A';
-        case 'C':
-        case 'c':
-            return 'G';
-        case 'G':
-        case 'g':
-            return 'C';
-        default:
-            return 'N';
-    }
-}
+//inline char complement(char base) {
+//    switch(base){
+//        case 'A':
+//        case 'a':
+//            return 'T';
+//        case 'T':
+//        case 't':
+//            return 'A';
+//        case 'C':
+//        case 'c':
+//            return 'G';
+//        case 'G':
+//        case 'g':
+//            return 'C';
+//        default:
+//            return 'N';
+//    }
+//}
 
 inline bool starts_with( string const & value,  string const & starting)
 {
