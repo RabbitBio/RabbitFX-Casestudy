@@ -113,6 +113,7 @@ namespace mash{
                   // }
                   // gzrewind(mZipFile);
 #if defined(USE_IGZIP)
+                  cerr << "using igzip" << endl;
                   mFile = fdopen(fd, "r");
                   if (mFile == NULL)
                   {
@@ -130,7 +131,7 @@ namespace mash{
                   ret = isal_read_gzip_header(&mStream, &mIgzipHeader);
                   if (ret != ISAL_DECOMP_OK)
                   {
-                    cerr << "error invalid gzip header found: " << fileName_ << endl;
+                    cerr << "error invalid gzip header found: " << endl;
                     if (mFile != NULL)
                     {
                       fclose(mFile);
@@ -138,6 +139,7 @@ namespace mash{
                     exit(-1);
                   }
 #else
+                  cerr << "using libz" << endl;
                   mZipFile = gzdopen(fd, "r");
                   gzrewind(mZipFile);
 #endif
