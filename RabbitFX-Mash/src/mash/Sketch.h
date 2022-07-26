@@ -239,7 +239,7 @@ public:
     void setReferenceName(int i, const std::string name) {references[i].name = name;}
     void setReferenceComment(int i, const std::string comment) {references[i].comment = comment;}
 	bool sketchFileBySequence(FILE * file, ThreadPool<Sketch::SketchInput, Sketch::SketchOutput> * threadPool);
-	bool sketchFileByChunk(FILE * file, ThreadPool<Sketch::SketchInput, Sketch::SketchOutput> * threadPool);
+	bool sketchFileByChunk(FILE * file, ThreadPool<Sketch::SketchInput, Sketch::SketchOutput> * threadPool, bool isZipFile);
 	void useThreadOutput(SketchOutput * output);
 	void useThreadOutput_FreeMemory(SketchOutput * output);
 	void useThreadOutputChunk(SketchOutput * output);

@@ -195,6 +195,7 @@ int Sketch::initFromFiles(const vector<string> & files, const Parameters & param
         else
 		{
 			FILE * inStream;
+      bool isZipFile = false;
 		
 			if ( files[i] == "-" )
 			{
@@ -213,6 +214,7 @@ int Sketch::initFromFiles(const vector<string> & files, const Parameters & param
 				}
 			
 				inStream = fopen(files[i].c_str(), "r");
+        if(ends_with(files[i], "gz")) isZipFile = true;
 			
 				if ( inStream == NULL )
 				{
@@ -236,7 +238,7 @@ int Sketch::initFromFiles(const vector<string> & files, const Parameters & param
 			{
 				//if ( ! sketchFileBySequence(inStream, &threadPool) )
 				individual = true;
-				if ( ! sketchFileByChunk(inStream, &threadPool) )
+				if ( ! sketchFileByChunk(inStream, &threadPool, isZipFile) )
 				{
 					cerr << "\nERROR: reading " << files[i] << "." << endl;
 					exit(1);
@@ -403,10 +405,10 @@ bool Sketch::sketchFileBySequence(FILE * file, ThreadPool<Sketch::SketchInput, S
 	return true;
 }
 
-bool Sketch::sketchFileByChunk(FILE * file, ThreadPool<Sketch::SketchInput, Sketch::SketchOutput> * threadPool)
+bool Sketch::sketchFileByChunk(FILE * file, ThreadPool<Sketch::SketchInput, Sketch::SketchOutput> * threadPool, bool isZipFile)
 {
 	mash::fa::FastaDataPool *fastaPool    = new mash::fa::FastaDataPool(parameters.parallelism, 1<<20);
-	mash::fa::FastaFileReader *fileReader = new mash::fa::FastaFileReader(fileno(file), parameters.kmerSize - 1, true);
+	mash::fa::FastaFileReader *fileReader = new mash::fa::FastaFileReader(fileno(file), parameters.kmerSize - 1, isZipFile);
 	mash::fa::FastaReader *fastaReader    = new mash::fa::FastaReader(*fileReader, *fastaPool);
     int l;
     int count = 0;
