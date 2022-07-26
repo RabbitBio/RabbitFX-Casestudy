@@ -1,5 +1,13 @@
 AC_INIT(src/mash/mash.cpp)
 
+AC_ARG_WITH(igzip, [  --with-igzip=<path/to/capnp>     libisal Proto install dir (default: /usr/local/)])
+
+if test "$with_igzip" == ""
+then
+	with_igzip=/usr/local/
+fi
+
+
 AC_ARG_WITH(capnp, [  --with-capnp=<path/to/capnp>     Cap'n Proto install dir (default: /usr/local/)])
 
 if test "$with_capnp" == ""
@@ -43,6 +51,7 @@ then
 	AC_MSG_ERROR([Cap'n Proto headers not found.])
 fi
 
+
 if test "$with_boost" == ""
 then
     CPPFLAGS="-I$with_gsl/include"
@@ -74,6 +83,14 @@ else
     AC_SUBST(mathinc, $with_boost/include)
     AC_SUBST(amcppflags, "-DUSE_BOOST")
 fi
+
+if test "$with_igzip" == ""
+then
+  CPPFLAGS="$CPPFLAGS"
+else
+  CPPFLAGS="$CPPFLAGS -DUSE_IGZIP -I$with_igzip/include -L$with_igzip/lib -lisal"
+fi
+
 
 #AC_ARG_ENABLE(simd, AS_HELP_STRING([--enable-simd], [enable simd(default=no)]), [enable_simd=${enableval}], [enable_simd=no])       
 #
