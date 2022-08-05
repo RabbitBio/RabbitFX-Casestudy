@@ -10,14 +10,14 @@ RabbitFX-Mash is an efficient highly optimized implementation of [Mash](https://
    - GNU Scientific Library ( http://www.gnu.org/software/gsl/ )
    - Zlib ( included with most Linuxes, http://www.zlib.net ) 
    - GCC >= 5 (C++14 required)
+   - ISA-L(optional) [ISA-L](https://github.com/intel/isa-l) 
 
 **Build:**
 
 ```bash
 cd RabbitFX-Mash
 ./bootstrap.sh
-./configure [--prefix=...] [--with-capnp=...] [--with-gsl=...] \
-            [--with-simd=yes/no]
+./configure [--prefix=...] [--with-capnp=...] [--with-gsl=...] [--with-igzip=...]
 make -j4
 #optional
 make install

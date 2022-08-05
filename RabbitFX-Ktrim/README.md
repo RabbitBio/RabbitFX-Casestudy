@@ -3,7 +3,10 @@ RabbitFX-Ktrim is an enhanced version of [Ktrim](https://github.com/hellosunking
 
 ## Installation
 
-you can re-compile the programs:
+1. Dependency (optional)
+install [ISA-L](https://github.com/intel/isa-l) 
+
+2. You can compile the program:
 
 ```bash
 
@@ -12,6 +15,8 @@ cd RabbitFX-Casestudy/RabbitFX-Ktrim
 mkdir build
 cd build
 cmake ..
+# or with ISA-L: 
+# cmake .. -DIGZIP_PREFIX=/path/to/libisal
 make 
 ```
 
