@@ -186,3 +186,6 @@ If you are not a root user, you need to build the dependecies from source code.
 ```bash
 ./mash screen test/genome1.fna.msh test/reads1.fastq -p nthreads > scr.out
 ```
+
+## Cite
+H. Zhang et al., "RabbitFX: Efficient Framework for FASTA/Q File Parsing on Modern Multi-Core Platforms," in IEEE/ACM Transactions on Computational Biology and Bioinformatics, vol. 20, no. 3, pp. 2341-2348, 1 May-June 2023, doi: 10.1109/TCBB.2022.3219114.
